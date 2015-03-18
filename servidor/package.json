@@ -1,0 +1,31 @@
+{
+  "name": "Rastreamento",
+  "version": "1.0.0",
+  "description": "Sistema de rastreamento",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": ">= 1.0.0",
+    "connect-flash": ">= 0.1.x",
+    "cookie": ">= 0.1.2",
+    "cors": ">= 2.4.1",
+    "errorhandler": ">= 1.0.0",
+    "express": "= 3.x.x",
+    "lodash": ">= 2.4.1",
+    "method-override": ">= 1.0.0",
+    "morgan": ">= 1.0.0",
+    "mysql": ">= 2.4.2",
+    "passport": ">= 0.0.0",
+    "passport-local": ">= 0.0.0",
+    "pg": ">= 3.4.1",
+    "password-hash": ">= 0.0.0",
+    "sequelize": ">= 2.0.0-rc8",
+    "forever": ">= 0.13.0",
+    "forever-monitor": ">= 0.13.0",
+    "swig": "^1.4.2"
+  },
+  "engines": {
+    "node": ">= 0.10.36"
+  }
+}

@@ -1,0 +1,33 @@
+html {
+  height: 100%;
+  margin: 0px;
+  padding: 0px
+}
+
+body {
+  padding-top: 51px;
+  height: 100%;
+  margin: 0px;
+}
+
+.title-view {
+	margin-bottom: 20px;
+}
+
+.btn-group-toogle{
+	float: right;
+	margin-right: 20px;
+}
+
+input{
+  color: black;
+  outline: none;
+  box-shadow: none !important;
+  border: 1px solid #ccc !important;
+}
+
+#map {
+  height: 100%;
+  margin: 0px;
+  padding: 0px
+}
