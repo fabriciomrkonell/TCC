@@ -11,9 +11,12 @@ var express = require('express'),
     passport = require('passport'),
     flash = require('connect-flash'),
     LocalStrategy = require('passport-local').Strategy,
-    user = require('./routes/user'),
     route_passport = require('./routes/passport'),
     site = require('./routes/site'),
+    home = require('./routes/home'),
+    util = require('./routes/util'),
+    router_profile  = require('./routes/profile'),
+    router_equipment  = require('./routes/equipment'),
     swig = require('swig');
 
 app.set('port', process.env.PORT || 3000)
@@ -44,7 +47,7 @@ function isAuthenticatedPage(req, res, next) {
   if (req.isAuthenticated()){
     return next();
   }
-  res.send({ success: 2, message: 'Falha na autenticação!' });
+  res.send({ error: 2, message: 'Falha na autenticação!' });
 }
 
 function isAuthenticated(req, res, next) {
@@ -81,23 +84,42 @@ passport.use(new LocalStrategy(
 ));
 
 app.get('/', function(req, res, next){
-  res.sendfile('public/index.html');
+  res.sendfile('public/views/site/index.html');
+});
+
+app.get('/register', function(req, res, next){
+  res.sendfile('public/views/site/register.html');
+});
+
+app.get('/reset-password', function(req, res, next){
+  res.sendfile('public/views/site/reset-password.html');
 });
 
 app.get('/home', isAuthenticated, function(req, res, next){
-  site.home(req, res, next, null);
+  home.home(req, res, next);
 });
 
 app.get('/profile', isAuthenticated, function(req, res, next){
-  site.profile(req, res, next, null);
+  home.profile(req, res, next);
 });
 
-app.get('/newuser', isAuthenticated, function(req, res, next){
-  site.newuser(req, res, next, null);
+app.get('/equipment', isAuthenticated, function(req, res, next){
+  home.equipment(req, res, next);
 });
 
-app.get('/realtime', isAuthenticated, function(req, res, next){
-  site.realtime(req, res, next, null);
+app.get('/realtime/:id', isAuthenticated, function(req, res, next){
+  db.Equipment.find({
+    where: {
+      id: req.param('id'),
+      UserId: req.user.id
+    }
+  }).success(function(entity) {
+    if (entity) {
+      home.realtime(req, res, next);
+    } else {
+      res.redirect('/home');
+    }
+  });
 });
 
 app.get('/logout', function(req, res, next){
@@ -110,16 +132,32 @@ app.post('/login',
     failureRedirect: '/',
     failureFlash: true
   }), function(req, res, next) {
-    res.json({ success: 1})
+    res.json({ error: 0 })
 });
 
-app.post('/newuser', isAuthenticated, user.persist)
+// Site
+app.post('/api/register', site.register);
+app.post('/api/reset-password', site.resetPassword);
+
+// Client
+app.get('/api/client_persist', util.persist);
+app.get('/api/client_start', util.start);
+app.get('/api/client_stop', util.stop);
+
+// Profile
+app.get('/api/data-profile', isAuthenticatedPage, router_profile.dataProfile);
+app.post('/api/persist-profile', isAuthenticatedPage, router_profile.persistProfile);
+app.post('/api/persist-profile-password', isAuthenticatedPage, router_profile.persistProfilePassword);
+
+// Equipment
+app.get('/api/data-equipment', isAuthenticatedPage, router_equipment.dataEquipment);
+app.post('/api/persist-equipment', isAuthenticatedPage, router_equipment.persistEquipment);
+app.delete('/api/delete-equipment/:id', isAuthenticatedPage, router_equipment.deleteEquipment);
 
 db.sequelize.sync({ force: false }).complete(function(err) {
   if (err) {
     throw err
   } else {
-    user.init();
     http.listen(app.get('port'), function(){
       console.log('Express server listening on port ' + app.get('port'))
     });

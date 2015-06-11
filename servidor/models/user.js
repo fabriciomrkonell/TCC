@@ -13,9 +13,12 @@ module.exports = function(sequelize, DataTypes) {
       set: function(password) {
         this.setDataValue('password', passwordHash.generate(password));
       }
-    },
-    observation: {
-      type: DataTypes.TEXT
+    }
+  }, {
+    classMethods: {
+      associate: function(models) {
+        User.hasMany(models.Equipment);
+      }
     }
   });
   return User;

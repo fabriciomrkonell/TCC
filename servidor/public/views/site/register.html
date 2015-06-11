@@ -9,7 +9,7 @@
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/index/style.css" rel="stylesheet">
   </head>
-  <body ng-controller="ctrl" class="ng-cloak">
+  <body ng-controller="register" class="ng-cloak">
     <div class="container">
       <div class="row img-center">
         <div class="col-sm-4"></div>
@@ -19,16 +19,24 @@
         <div class="col-sm-4"></div>
       </div>
       <form class="form-signin">
-        <input type="text" class="form-control" placeholder="Email" ng-model="data.username">
+        <input type="name" class="form-control" placeholder="Nome" ng-model="data.name">
+        <input type="text" class="form-control" placeholder="Email" ng-model="data.email">
         <input type="password" class="form-control" placeholder="Senha" ng-model="data.password">
         <div class="row">
           <div class="col-sm-12 text-center">
-            <button class="btn btn-lg btn-default btn-block" type="button" ng-click="entrar()">Entrar</button>
+            <button class="btn btn-lg btn-default btn-block" type="button" ng-click="register()">Cadastar</button>
           </div>
         </div>
       </form>
+      <div class="form-group form-signin">
+        <div class="row">
+          <div class="col-sm-12 text-center">
+            <a href="/">Voltar</a>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="/lib/angular/angular.min.js"></script>
-    <script src="/js/index/ctrl.js"></script>
+    <script src="/js/site/register.js"></script>
   </body>
 </html>

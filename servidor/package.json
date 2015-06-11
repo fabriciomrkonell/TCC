@@ -1,7 +1,7 @@
 {
-  "name": "Rastreamento",
+  "name": "TCC",
   "version": "1.0.0",
-  "description": "Sistema de rastreamento",
+  "description": "Trabalho de conclusão de curso.",
   "scripts": {
     "start": "node server.js"
   },

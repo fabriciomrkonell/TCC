@@ -2,24 +2,22 @@
 
 angular.module('app', []);
 
-angular.module('app').controller('ctrl', ['$scope', '$http', function($scope, $http){
+angular.module('app').controller('index', ['$scope', '$http', function($scope, $http){
 
   angular.extend($scope, {
     data: {
-      username: 'root',
-      password: 'toor'
+      username: 'fabricioronchii@gmail.com',
+      password: 'admin'
     }
   });
 
-  $scope.entrar = function(){
+  $scope.login = function(){
     $http.post('/login', $scope.data).success(function(data){
-      if(data.success){
+      if(data.error == 0){
         window.location = '/home';
       }else{
         alert('Email ou senha inválidos!');
       }
-    }).error(function(error){
-      alert('Erro ao fazer login!');
     });
   };
 

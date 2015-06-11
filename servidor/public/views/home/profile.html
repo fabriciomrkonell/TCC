@@ -1,0 +1,36 @@
+<div class="container" ng-controller="profile">
+	<h3>
+		<i class="glyphicon glyphicon-map-marker"></i>
+		&nbsp;&nbsp;Perfil
+	</h3>
+	<div class="row">
+		<div class="col-sm-4">
+	 		<div class="form-group">
+	    	<label>Nome</label>
+	    	<input type="text" class="form-control" ng-model="data.name" placeholder="Nome" />
+	  	</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+			<div class="form-group">
+				<label>Email</label>
+        <input type="text" class="form-control" ng-model="data.email" placeholder="Email" />
+      </div>
+		</div>
+	</div>
+	<div class="form-group">
+	 	<button type="button" class="btn btn-default" ng-click="save()">Salvar</button>
+	</div>
+	<div class="row">
+		<div class="col-sm-4">
+	 		<div class="form-group">
+	    	<label>Senha</label>
+	    	<input type="password" class="form-control" ng-model="data.password" placeholder="Senha"/>
+	  	</div>
+		</div>
+	</div>
+	<div class="form-group">
+	 	<button type="button" class="btn btn-default" ng-click="savePassword()">Salvar</button>
+	</div>
+</div>
