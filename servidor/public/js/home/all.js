@@ -2,13 +2,7 @@
 
 angular.module('app', []);
 
-function toggleDropdown(classDropDown){
-  if(document.getElementById(classDropDown).classList.contains("open")){
-    document.getElementById(classDropDown).classList.remove("open");
-  }else{
-    document.getElementById(classDropDown).classList.add("open");
-  }
-};
+var socket = io();
 
 angular.module('app').controller('profile', ['$scope', '$http', function($scope, $http){
 
@@ -83,6 +77,52 @@ angular.module('app').controller('equipment', ['$scope', '$http', '$rootScope', 
 
 }]);
 
+angular.module('app').controller('realtime', ['$scope', '$rootScope', function($scope, $rootScope){
+
+  var path = new google.maps.MVCArray(),
+      service = new google.maps.DirectionsService(), poly;
+
+  socket.on('news_cords', function(data){
+    console.log(data);
+  });
+
+  function initialize() {
+    var myOptions = {
+      zoom: 13,
+      center: new google.maps.LatLng(-26.494561, -49.1048534),
+      mapTypeId: google.maps.MapTypeId.ROADMAP,
+      mapTypeControl: false,
+      disableDefaultUI: true,
+      draggableCursor: "crosshair"
+    }
+
+    var map = new google.maps.Map(document.getElementById("map"), myOptions);
+    poly = new google.maps.Polyline({ map: map });
+
+    google.maps.event.addListener(map, "click", function(evt) {
+      if (path.getLength() === 0) {
+        path.push(evt.latLng);
+        poly.setPath(path);
+      } else {
+        service.route({
+          origin: path.getAt(path.getLength() - 1),
+          destination: evt.latLng,
+          travelMode: google.maps.DirectionsTravelMode.DRIVING
+        }, function(result, status) {
+          if (status == google.maps.DirectionsStatus.OK) {
+            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+              path.push(result.routes[0].overview_path[i]);
+            }
+          }
+        });
+      }
+    });
+  }
+
+  google.maps.event.addDomListener(window, 'load', initialize);
+
+}]);
+
 angular.module('app').config(['$interpolateProvider', '$httpProvider', function($interpolateProvider, $httpProvider){
 
   $httpProvider.interceptors.push(function($q) {
@@ -109,13 +149,49 @@ angular.module('app').config(['$interpolateProvider', '$httpProvider', function(
 
 angular.module('app').run(['$rootScope', 'Util', function($rootScope, Util){
   Util.getEquipments();
+
+  $rootScope.noEvent = function(e, obj){
+    Util.setStatus(obj);
+    e.stopPropagation();
+  };
+
+  $rootScope.realtime = function(e){
+    if(window.location.pathname != "/realtime"){
+      window.location = "/realtime";
+    }
+  };
+
+  $rootScope.isRealTime = function(){
+    if(window.location.pathname == "/realtime"){
+      return true;
+    }
+    return false;
+  };
+
+  $rootScope.isStatus = function(index){
+    if($rootScope.equipments[index].history > 0){
+      return true;
+    }
+    return false;
+  };
+
 }]);
 
 angular.module('app').service('Util', ['$http', '$rootScope', function($http, $rootScope){
   this.getEquipments = function(){
     $http.get('/api/data-equipment').success(function(data){
       $rootScope.equipments = data.data;
+
+      var arrayEquipments  = [];
+      for(var i = 0; i < data.data.length; i++){
+        arrayEquipments.push(data.data[i].token);
+      }
+
+      socket.emit('equipments', { equipments: arrayEquipments, url: window.location.pathname });
     });
+  },
+  this.setStatus = function(obj){
+    $http.post('/api/persist-equipment-status', obj);
   }
 }]);
 

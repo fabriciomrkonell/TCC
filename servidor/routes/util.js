@@ -12,7 +12,7 @@ exports.persist = function(req, res, next) {
           db.Cords.create({
             lat: req.param('lat'),
             lon: req.param('lon'),
-            history: entity.histoty,
+            history: entity.history,
             EquipmentId: entity.id
           }).success(function(data){
             res.send("1");

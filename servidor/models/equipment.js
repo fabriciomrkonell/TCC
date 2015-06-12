@@ -6,6 +6,10 @@ module.exports = function(sequelize, DataTypes) {
     token: {
       type: DataTypes.STRING(60)
     },
+    status: {
+      type: DataTypes.BOOLEAN(),
+      defaultValue: false
+    },
     history: {
       type: DataTypes.INTEGER(100),
       defaultValue: 0

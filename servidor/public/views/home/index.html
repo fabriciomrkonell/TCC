@@ -24,22 +24,22 @@
           <ul class="nav navbar-nav">
             <li><a href="/home">Home</a></li>
             <li><a href="/equipment">Equipamentos</a></li>
-            <li id="dropdownLeft" onclick="toggleDropdown('dropdownLeft')">
-              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
-                Tempo real&nbsp;<span class="caret"></span>
+            <li>
+              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" ng-click="realtime(event)">
+                Tempo real&nbsp;<span class="caret" ng-show="isRealTime()"></span>
               </a>
-              <ul class="dropdown-menu">
-                <li ng-repeat="obj in equipments">
-                  <a ng-href="/realtime/((obj.id))">
-                    <i class="glyphicon glyphicon glyphicon-flag"></i>
-                    &nbsp;&nbsp;((obj.description))</a>
+              <ul class="dropdown-menu" ng-show="isRealTime()">
+                <li ng-repeat="obj in equipments" ng-click="noEvent($event, obj)" ng-show="isStatus($index)">
+                  <a href="#">
+                    <input type="checkbox" ng-checked="obj.status" />
+                    &nbsp;&nbsp;&nbsp;((obj.description))</a>
                 </li>
               </ul>
             </li>
             <li><a href="/home">Histórico</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">
-            <li id="dropdownRight" onclick="toggleDropdown('dropdownRight')">
+            <li>
               <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown">
                 Configurações&nbsp;<span class="caret"></span>
               </a>
@@ -73,7 +73,10 @@
       {% include '../home/equipment.html' %}
     {% endif %}
 
+    <script src="/lib/jquery/jquery.min.js"></script>
     <script src="/lib/angular/angular.min.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/home/all.js"></script>
   </body>
 </html>

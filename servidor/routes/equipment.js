@@ -36,6 +36,18 @@ exports.persistEquipment = function(req, res, next) {
   });
 };
 
+exports.persistEquipmentStatus = function(req, res, next) {
+  db.Equipment.find({ where: { id: req.body.id } }).success(function(entity) {
+    if (entity) {
+      entity.updateAttributes({ status: !req.body.status }).success(function(entity) {
+        res.send({ message: "Equipamento atualizado com sucesso!", error: 0 });
+      });
+    } else {
+      res.send({ message: "Equipamento não encontrado!", error: 1 });
+    }
+  });
+};
+
 exports.dataEquipment = function(req, res, next) {
   db.Equipment.findAll({ where: { UserId: req.user.id } }).success(function(entities) {
     res.send({ data: entities, error: 0 });

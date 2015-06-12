@@ -3,6 +3,7 @@
 var express = require('express'),
     app = express(),
     http = require('http').Server(app),
+    io = require('socket.io')(http),
     bodyParser = require('body-parser'),
     errorHandler = require('errorhandler'),
     methodOverride = require('method-override'),
@@ -47,7 +48,7 @@ function isAuthenticatedPage(req, res, next) {
   if (req.isAuthenticated()){
     return next();
   }
-  res.send({ error: 2, message: 'Falha na autenticação!' });
+  res.send({ error: 0, message: 'Falha na autenticação!' });
 }
 
 function isAuthenticated(req, res, next) {
@@ -107,19 +108,24 @@ app.get('/equipment', isAuthenticated, function(req, res, next){
   home.equipment(req, res, next);
 });
 
-app.get('/realtime/:id', isAuthenticated, function(req, res, next){
-  db.Equipment.find({
-    where: {
-      id: req.param('id'),
-      UserId: req.user.id
-    }
-  }).success(function(entity) {
-    if (entity) {
-      home.realtime(req, res, next);
-    } else {
-      res.redirect('/home');
-    }
-  });
+app.get('/realtime', isAuthenticated, function(req, res, next){
+  home.realtime(req, res, next);
+});
+
+app.get('/api/teste', function(req, res, next){
+  db.Equipment.findAll({
+            include: {
+              model: db.Cords
+            },
+            where: {
+              status: 1,
+              history: {
+                $ne: 0
+              }
+            }
+          }).success(function(data){
+            res.send(data);
+          });
 });
 
 app.get('/logout', function(req, res, next){
@@ -152,6 +158,7 @@ app.post('/api/persist-profile-password', isAuthenticatedPage, router_profile.pe
 // Equipment
 app.get('/api/data-equipment', isAuthenticatedPage, router_equipment.dataEquipment);
 app.post('/api/persist-equipment', isAuthenticatedPage, router_equipment.persistEquipment);
+app.post('/api/persist-equipment-status', isAuthenticatedPage, router_equipment.persistEquipmentStatus);
 app.delete('/api/delete-equipment/:id', isAuthenticatedPage, router_equipment.deleteEquipment);
 
 db.sequelize.sync({ force: false }).complete(function(err) {
@@ -159,7 +166,51 @@ db.sequelize.sync({ force: false }).complete(function(err) {
     throw err
   } else {
     http.listen(app.get('port'), function(){
+
       console.log('Express server listening on port ' + app.get('port'))
+
+      io.on('connection', function(socket){
+
+        socket.equipments = [];
+
+        setInterval(function(){
+          if(socket.equipments.length > 0){
+            getCords();
+          }
+        }, 2000);
+
+        socket.on('disconnect', function(){
+          socket.equipments = [];
+        });
+
+        socket.on('equipments', function(obj){
+          if(obj.url == "/realtime"){
+            socket.equipments = obj.equipments;
+          }
+        });
+
+        function getCords(){
+          db.Equipment.findAll({
+            include: {
+              model: db.Cords,
+              where: {
+                history: db.Cords.history
+              }
+            },
+            where: {
+              token: socket.equipments,
+              status: 1,
+              history: {
+                $ne: 0
+              }
+            }
+          }).success(function(data){
+            socket.emit('news_cords', data);
+          });
+        };
+
+      });
+
     });
   }
 });
