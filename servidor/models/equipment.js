@@ -18,7 +18,7 @@ module.exports = function(sequelize, DataTypes) {
     classMethods: {
       associate: function(models) {
         Equipment.belongsTo(models.User);
-        Equipment.hasMany(models.Cords);
+        Equipment.hasMany(models.Cords, { onDelete: 'cascade' });
       }
     }
   });

@@ -11,14 +11,16 @@ angular.module('app').controller('index', ['$scope', '$http', function($scope, $
     }
   });
 
-  $scope.login = function(){
-    $http.post('/login', $scope.data).success(function(data){
-      if(data.error == 0){
-        window.location = '/home';
-      }else{
-        alert('Email ou senha inválidos!');
-      }
-    });
+  $scope.login = function(e){
+    if(e.keyCode == 13 || e.type == "click"){
+      $http.post('/login', $scope.data).success(function(data){
+        if(data.error == 0){
+          window.location = '/home';
+        }else{
+          alert('Email ou senha inválidos!');
+        }
+      });
+    }
   };
 
 }]);

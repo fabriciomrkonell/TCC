@@ -20,10 +20,10 @@
       </div>
       <form class="form-signin">
         <input type="text" class="form-control" placeholder="Email" ng-model="data.username">
-        <input type="password" class="form-control" placeholder="Senha" ng-model="data.password">
+        <input type="password" class="form-control" placeholder="Senha" ng-model="data.password" ng-keypress="login($event)">
         <div class="row">
           <div class="col-sm-12 text-center">
-            <button class="btn btn-lg btn-default btn-block" type="button" ng-click="login()">Entrar</button>
+            <button class="btn btn-lg btn-default btn-block" type="button" ng-click="login($event)">Entrar</button>
           </div>
         </div>
       </form>
