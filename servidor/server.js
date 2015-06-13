@@ -112,22 +112,6 @@ app.get('/realtime', isAuthenticated, function(req, res, next){
   home.realtime(req, res, next);
 });
 
-app.get('/api/teste', function(req, res, next){
-  db.Equipment.findAll({
-            include: {
-              model: db.Cords
-            },
-            where: {
-              status: 1,
-              history: {
-                $ne: 0
-              }
-            }
-          }).success(function(data){
-            res.send(data);
-          });
-});
-
 app.get('/logout', function(req, res, next){
   req.logout();
   res.redirect('/');
@@ -194,7 +178,7 @@ db.sequelize.sync({ force: false }).complete(function(err) {
             include: {
               model: db.Cords,
               where: {
-                history: db.Cords.history
+                history: db.sequelize.col('Equipment.history')
               }
             },
             where: {

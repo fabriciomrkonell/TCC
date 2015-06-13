@@ -24,18 +24,25 @@
           <ul class="nav navbar-nav">
             <li><a href="/home">Home</a></li>
             <li><a href="/equipment">Equipamentos</a></li>
-            <li>
-              <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" ng-click="realtime(event)">
-                Tempo real&nbsp;<span class="caret" ng-show="isRealTime()"></span>
-              </a>
-              <ul class="dropdown-menu" ng-show="isRealTime()">
-                <li ng-repeat="obj in equipments" ng-click="noEvent($event, obj)" ng-show="isStatus($index)">
-                  <a href="#">
-                    <input type="checkbox" ng-checked="obj.status" />
+
+            {% if count == 0 %}
+              <li><a href="/realtime">Tempo real</a></li>
+            {% endif %}
+
+            {% if count > 0 %}
+              <li>
+                <a href="javascript:void(0)" class="dropdown-toggle" data-toggle="dropdown" ng-click="realtime(event)">
+                  Tempo real&nbsp;<span class="caret" ng-show="isRealTime()"></span>
+                </a>
+                <ul class="dropdown-menu" ng-show="isRealTime()">
+                  <li ng-repeat="obj in equipments" ng-click="noEvent($event, obj)" ng-show="isStatus($index)">
+                    <a href="#"><input type="checkbox" ng-checked="obj.status" />
                     &nbsp;&nbsp;&nbsp;((obj.description))</a>
-                </li>
-              </ul>
-            </li>
+                  </li>
+                </ul>
+              </li>
+            {% endif %}
+
             <li><a href="/home">Histórico</a></li>
           </ul>
           <ul class="nav navbar-nav navbar-right">

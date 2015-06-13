@@ -4,25 +4,39 @@ var db = require('../models');
 
 exports.home = function(req, res, next) {
   res.render('views/home', {
-    page: '/'
+    page: '/',
+    count: 0
   });
 };
 
 exports.profile = function(req, res, next) {
   res.render('views/home', {
     page: '/profile',
-    data: req.user
+    data: req.user,
+    count: 0
   });
 };
 
 exports.realtime = function(req, res, next) {
-  res.render('views/home', {
-    page: '/realtime'
+  db.Equipment.count({
+    where: {
+      UserId: req.user.id,
+      history: {
+        $ne: 0
+      }
+    }
+  }).success(function(count){
+    console.log("--------------" + count + "----------------");
+    res.render('views/home', {
+      page: '/realtime',
+      count: count
+    });
   });
 };
 
 exports.equipment = function(req, res, next) {
   res.render('views/home', {
-    page: '/equipment'
+    page: '/equipment',
+    count: 0
   });
 };
