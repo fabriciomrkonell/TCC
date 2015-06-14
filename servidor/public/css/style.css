@@ -31,3 +31,7 @@ input{
   margin: 0px;
   padding: 0px
 }
+
+.ng-cloak {
+  display: none;
+}
