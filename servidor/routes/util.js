@@ -72,12 +72,12 @@ exports.start = function(req, res, next) {
     if (entity) {
       if(entity.history == 0){
         db.Cords.max('history').success(function(max){
-          entity.updateAttributes({ history: ((max || 0) + 1)}).success(function(){
-            res.send({ message: "Rastreamento iniciado com sucesso!", error: 0 });
+          entity.updateAttributes({ history: ((max || 0) + 1)}).success(function(entityCords){
+            res.send({ message: "Rastreamento iniciado com sucesso!", error: 0, data: entityCords.history });
           });
         });
       }else{
-        res.send({ message: "Rastreamento iniciado com sucesso!", error: 0 });
+        res.send({ message: "Rastreamento iniciado com sucesso!", error: 0, data: entity.history });
       }
     } else {
       res.send({ message: "Equipamento não encontrado!", error: 1 });
@@ -89,10 +89,10 @@ exports.stop = function(req, res, next) {
   db.Equipment.find({ where: { token: req.param('token') } }).success(function(entity) {
     if (entity) {
       if(entity.history == 0){
-        res.send({ message: "Rastreamento parado com sucesso!", error: 0 });
+        res.send({ message: "Rastreamento parado com sucesso!", error: 0, data: entity.history });
       }else{
-        entity.updateAttributes({ history: 0 }).success(function(){
-          res.send({ message: "Rastreamento parado com sucesso!", error: 0 });
+        entity.updateAttributes({ history: 0 }).success(function(entityCords){
+          res.send({ message: "Rastreamento parado com sucesso!", error: 0, data: entityCords.history });
         });
       }
     } else {

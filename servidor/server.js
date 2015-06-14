@@ -84,6 +84,12 @@ passport.use(new LocalStrategy(
   }
 ));
 
+app.get('*', function(req, res, next){
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
+
 app.get('/', function(req, res, next){
   res.sendfile('public/views/site/index.html');
 });
@@ -142,6 +148,7 @@ app.post('/api/persist-profile-password', isAuthenticatedPage, router_profile.pe
 
 // Equipment
 app.get('/api/data-equipment', isAuthenticatedPage, router_equipment.dataEquipment);
+app.get('/api/data-equipment-is-token/:token', router_equipment.dataEquipmentIsToken);
 app.post('/api/persist-equipment', isAuthenticatedPage, router_equipment.persistEquipment);
 app.post('/api/persist-equipment-status', isAuthenticatedPage, router_equipment.persistEquipmentStatus);
 app.delete('/api/delete-equipment/:id', isAuthenticatedPage, router_equipment.deleteEquipment);
