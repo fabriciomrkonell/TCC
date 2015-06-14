@@ -146,7 +146,7 @@ app.post('/api/persist-equipment', isAuthenticatedPage, router_equipment.persist
 app.post('/api/persist-equipment-status', isAuthenticatedPage, router_equipment.persistEquipmentStatus);
 app.delete('/api/delete-equipment/:id', isAuthenticatedPage, router_equipment.deleteEquipment);
 
-db.sequelize.sync({ force: false }).complete(function(err) {
+db.sequelize.sync({ force: true }).complete(function(err) {
   if (err) {
     throw err
   } else {
