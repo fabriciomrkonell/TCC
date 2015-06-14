@@ -26,7 +26,6 @@ exports.realtime = function(req, res, next) {
       }
     }
   }).success(function(count){
-    console.log("--------------" + count + "----------------");
     res.render('views/home', {
       page: '/realtime',
       count: count

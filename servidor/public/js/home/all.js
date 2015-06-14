@@ -2,7 +2,11 @@
 
 angular.module('app', []);
 
-var socket = io();
+var socket = null;
+
+if(window.location.pathname == '/realtime'){
+  socket = io();
+}
 
 angular.module('app').controller('profile', ['$scope', '$http', function($scope, $http){
 
@@ -15,7 +19,7 @@ angular.module('app').controller('profile', ['$scope', '$http', function($scope,
   });
 
   $http.get('/api/data-profile').success(function(data){
-    $scope.data = data;
+    $scope.data = data.data;
   });
 
   $scope.save = function(){
@@ -77,45 +81,42 @@ angular.module('app').controller('equipment', ['$scope', '$http', '$rootScope', 
 
 }]);
 
-angular.module('app').controller('realtime', ['$scope', '$rootScope', function($scope, $rootScope){
+angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
 
   var path = new google.maps.MVCArray(),
       service = new google.maps.DirectionsService(), poly;
 
+  socket.on('news_cords_all', function(data){
+    for(var i = 0; i < data[0].Cords.length; i++){
+      path.push(new google.maps.LatLng(data[0].Cords[i].lat, data[0].Cords[i].lon));
+    }
+    poly.setPath(path);
+  });
+
   socket.on('news_cords', function(data){
-    console.log(data);
+    path.push(new google.maps.LatLng(data.lat, data.lon));
+    poly.setPath(path);
+  });
+
+  socket.on('new_socket', function(data){
+    $http.post('api/persist-profile-socket', { socket: data });
   });
 
   function initialize() {
+
     var myOptions = {
       zoom: 13,
       center: new google.maps.LatLng(-26.494561, -49.1048534),
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       mapTypeControl: false,
-      disableDefaultUI: true,
-      draggableCursor: "crosshair"
+      disableDefaultUI: true
     }
 
     var map = new google.maps.Map(document.getElementById("map"), myOptions);
-    poly = new google.maps.Polyline({ map: map });
+    poly = new google.maps.Polyline({ map: map, strokeColor: "#FF0000" });
 
     google.maps.event.addListener(map, "click", function(evt) {
-      if (path.getLength() === 0) {
-        path.push(evt.latLng);
-        poly.setPath(path);
-      } else {
-        service.route({
-          origin: path.getAt(path.getLength() - 1),
-          destination: evt.latLng,
-          travelMode: google.maps.DirectionsTravelMode.DRIVING
-        }, function(result, status) {
-          if (status == google.maps.DirectionsStatus.OK) {
-            for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
-              path.push(result.routes[0].overview_path[i]);
-            }
-          }
-        });
-      }
+      $http.get('/api/client_persist?token=ULlP7&lat=' + evt.latLng.A + '&lon=' + evt.latLng.F);
     });
   }
 

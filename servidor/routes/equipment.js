@@ -49,7 +49,10 @@ exports.persistEquipmentStatus = function(req, res, next) {
 };
 
 exports.dataEquipment = function(req, res, next) {
-  db.Equipment.findAll({ where: { UserId: req.user.id } }).success(function(entities) {
+  db.Equipment.findAll({
+    attributes: ['id', 'description', 'token', 'history', 'status'],
+    where: { UserId: req.user.id }
+  }).success(function(entities) {
     res.send({ data: entities, error: 0 });
   });
 };

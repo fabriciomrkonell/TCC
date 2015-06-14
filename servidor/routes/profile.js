@@ -56,6 +56,18 @@ exports.persistProfilePassword = function(req, res, next) {
   });
 };
 
+exports.persistProfileSocket = function(req, res, next) {
+  db.User.find({ where: { id: req.user.id } }).success(function(entity) {
+    if (entity) {
+      entity.updateAttributes({ socket: req.body.socket }).success(function(entity) {
+        res.send({ message: "Socket atualizado com sucesso!", error: 0 });
+      });
+    } else {
+      res.send({ message: "Usuário não encontrado!", error: 1 });
+    }
+  });
+};
+
 exports.dataProfile = function(req, res, next) {
-  res.send({ name: req.user.name, email: req.user.email, error: 0 });
+  res.send({ data: { name: req.user.name, email: req.user.email }, error: 0 });
 };

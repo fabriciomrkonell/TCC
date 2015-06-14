@@ -13,6 +13,10 @@ module.exports = function(sequelize, DataTypes) {
       set: function(password) {
         this.setDataValue('password', passwordHash.generate(password));
       }
+    },
+    socket: {
+      type: DataTypes.STRING(100),
+      defaulValue: ""
     }
   }, {
     classMethods: {

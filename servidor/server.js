@@ -137,6 +137,7 @@ app.get('/api/client_stop', util.stop);
 // Profile
 app.get('/api/data-profile', isAuthenticatedPage, router_profile.dataProfile);
 app.post('/api/persist-profile', isAuthenticatedPage, router_profile.persistProfile);
+app.post('/api/persist-profile-socket', isAuthenticatedPage, router_profile.persistProfileSocket);
 app.post('/api/persist-profile-password', isAuthenticatedPage, router_profile.persistProfilePassword);
 
 // Equipment
@@ -155,46 +156,17 @@ db.sequelize.sync({ force: false }).complete(function(err) {
 
       io.on('connection', function(socket){
 
-        socket.equipments = [];
-
-        setInterval(function(){
-          if(socket.equipments.length > 0){
-            getCords();
-          }
-        }, 2000);
-
-        socket.on('disconnect', function(){
-          socket.equipments = [];
-        });
-
         socket.on('equipments', function(obj){
           if(obj.url == "/realtime"){
-            socket.equipments = obj.equipments;
+            util.get(socket, obj.equipments);
+            socket.emit('new_socket', socket.id);
           }
         });
-
-        function getCords(){
-          db.Equipment.findAll({
-            include: {
-              model: db.Cords,
-              where: {
-                history: db.sequelize.col('Equipment.history')
-              }
-            },
-            where: {
-              token: socket.equipments,
-              status: 1,
-              history: {
-                $ne: 0
-              }
-            }
-          }).success(function(data){
-            socket.emit('news_cords', data);
-          });
-        };
 
       });
 
     });
   }
 });
+
+module.exports.io = io;
