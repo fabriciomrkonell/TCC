@@ -12,9 +12,10 @@ angular.module('starter').run(function($ionicPlatform) {
 });
 
 angular.module('starter').constant('API', {
-  isToken: 'http://localhost:3000/api/data-equipment-is-token/',
-  startToken: 'http://localhost:3000/api/client_start?token=',
-  stopToken: 'http://localhost:3000/api/client_stop?token='
+  isToken: 'http://45.55.177.215:3000/api/data-equipment-is-token/',
+  persistToken: 'http://45.55.177.215:3000/api/client_persist?token=',
+  startToken: 'http://45.55.177.215:3000/api/client_start?token=',
+  stopToken: 'http://45.55.177.215:3000/api/client_stop?token='
 });
 
 
@@ -23,10 +24,18 @@ angular.module('starter').controller('ctrl', ['$scope', '$ionicPopup', '$http', 
   var interval = setInterval(function(){
     navigator.geolocation.getCurrentPosition(function(pos){
       $scope.cords = {
-        lat: pos.coords.latitude,
-        lon: pos.coords.longitude,
+        lat: pos.coords.latitude || 0,
+        lon: pos.coords.longitude || 0,
         date: new Date()
       };
+
+      if(angular.isObject($rootScope.token) && $rootScope.token.history > 0){
+        alert("2");
+        if($scope.cords.lat != 0 && $scope.cords.lon != 0){
+          $http.get(API.persistToken + $rootScope.token.token + '&lat=' + $scope.cords.lat + '&lon=' + $scope.cords.lon);
+        }
+      }
+
       $scope.$digest();
     }, function(err){
       $scope.cords.lat = err;
