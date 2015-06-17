@@ -83,24 +83,20 @@ angular.module('app').controller('equipment', ['$scope', '$http', '$rootScope', 
 
 angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
 
-  var path = new google.maps.MVCArray(),
+  var paths = {},
       service = new google.maps.DirectionsService(), poly;
-
-  socket.on('news_cords_all', function(data){
-    for(var i = 0; i < data[0].Cords.length; i++){
-      path.push(new google.maps.LatLng(data[0].Cords[i].lat, data[0].Cords[i].lon));
-    }
-    poly.setPath(path);
-  });
-
-  socket.on('news_cords', function(data){
-    path.push(new google.maps.LatLng(data.lat, data.lon));
-    poly.setPath(path);
-  });
 
   socket.on('new_socket', function(data){
     $http.post('api/persist-profile-socket', { socket: data });
   });
+
+  function isPoly(data, map){
+    if(paths[data.id] == null){
+      paths[data.id] = {};
+      paths[data.id].path = new google.maps.MVCArray();
+      paths[data.id].poly = new google.maps.Polyline({ map: map, strokeColor: "#FF0000" });
+    }
+  }
 
   function initialize() {
 
@@ -113,11 +109,26 @@ angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', f
     }
 
     var map = new google.maps.Map(document.getElementById("map"), myOptions);
-    poly = new google.maps.Polyline({ map: map, strokeColor: "#FF0000" });
 
-    google.maps.event.addListener(map, "click", function(evt) {
-      $http.get('/api/client_persist?token=ULlP7&lat=' + evt.latLng.A + '&lon=' + evt.latLng.F);
+    socket.on('news_cords_all', function(data){
+      for(var i = 0; i < data.length; i++){
+
+        isPoly(data[i], map);
+
+        for(var j = 0; j < (data[i].Cords.length - 1); j++){
+          paths[data[i].id].path.push(new google.maps.LatLng(data[i].Cords[j].lat, data[i].Cords[j].lon));
+        }
+
+        paths[data[i].id].poly.setPath(paths[data[i].id].path);
+      }
     });
+
+    socket.on('news_cords', function(data){
+      isPoly(data, map);
+      paths[data.id].path.push(new google.maps.LatLng(data.lat, data.lon));
+      paths[data.id].poly.setPath(paths[data.id].path);
+    });
+
   }
 
   google.maps.event.addDomListener(window, 'load', initialize);

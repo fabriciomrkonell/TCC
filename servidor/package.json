@@ -20,7 +20,7 @@
     "passport-local": ">= 0.0.0",
     "pg": ">= 3.4.1",
     "password-hash": ">= 0.0.0",
-    "sequelize": ">= 2.0.0-rc8",
+    "sequelize": "= 3.0.0",
     "forever": ">= 0.13.0",
     "forever-monitor": ">= 0.13.0",
     "swig": "^1.4.2",

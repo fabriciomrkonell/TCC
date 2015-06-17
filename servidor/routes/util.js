@@ -30,6 +30,7 @@ exports.get = function(socket, equipments) {
 exports.persist = function(req, res, next) {
   db.Equipment.find({
     where: { token: req.param('token') },
+    attributes: ['id', 'history'],
     include: {
       model: db.User,
       attributes: ['socket'],
@@ -40,6 +41,7 @@ exports.persist = function(req, res, next) {
         res.send({ message: "Rastreamento não inicializado!", error: 1 });
       }else{
         if((req.param('lat') != "" && req.param('lat') != null) && (req.param('lon') != "" && req.param('lon') != null)){
+
           db.Cords.create({
             lat: req.param('lat'),
             lon: req.param('lon'),
@@ -49,6 +51,7 @@ exports.persist = function(req, res, next) {
 
             if(io.io.sockets.connected[entity.User.socket]){
               io.io.sockets.connected[entity.User.socket].emit('news_cords', {
+                id: entity.id,
                 token: req.param('token'),
                 lat: req.param('lat'),
                 lon: req.param('lon')

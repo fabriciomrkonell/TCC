@@ -12,10 +12,14 @@ angular.module('starter').run(function($ionicPlatform, $http) {
 });
 
 angular.module('starter').constant('API', {
-  isToken: 'http://rastreamento.fabricioronchi.com/api/data-equipment-is-token/',
+  isToken: 'http://localhost:3000/api/data-equipment-is-token/',
+  persistToken: 'http://localhost:3000/api/client_persist?token=',
+  startToken: 'http://localhost:3000/api/client_start?token=',
+  stopToken: 'http://localhost:3000/api/client_stop?token='
+  /*isToken: 'http://rastreamento.fabricioronchi.com/api/data-equipment-is-token/',
   persistToken: 'http://rastreamento.fabricioronchi.com/api/client_persist?token=',
   startToken: 'http://rastreamento.fabricioronchi.com/api/client_start?token=',
-  stopToken: 'http://rastreamento.fabricioronchi.com/api/client_stop?token='
+  stopToken: 'http://rastreamento.fabricioronchi.com/api/client_stop?token='*/
 });
 
 

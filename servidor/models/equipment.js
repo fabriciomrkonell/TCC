@@ -8,7 +8,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     status: {
       type: DataTypes.BOOLEAN(),
-      defaultValue: false
+      defaultValue: true
     },
     history: {
       type: DataTypes.INTEGER(100),
