@@ -115,7 +115,7 @@ angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', f
 
         isPoly(data[i], map);
 
-        for(var j = 0; j < (data[i].Cords.length - 1); j++){
+        for(var  = 0; j < (data[i].Cords.length - 1); j++){
           paths[data[i].id].path.push(new google.maps.LatLng(data[i].Cords[j].lat, data[i].Cords[j].lon));
         }
 
@@ -132,6 +132,21 @@ angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', f
   }
 
   google.maps.event.addDomListener(window, 'load', initialize);
+
+  /*
+  var service = new google.maps.DirectionsService();
+  service.route({
+    origin: path.getAt(path.getLength() - 1),
+    destination: evt.latLng,
+    travelMode: google.maps.DirectionsTravelMode.DRIVING
+  }, function(result, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      for (var i = 0, len = result.routes[0].overview_path.length; i < len; i++) {
+        path.push(result.routes[0].overview_path[i]);
+      }
+    }
+  });
+  */
 
 }]);
 
