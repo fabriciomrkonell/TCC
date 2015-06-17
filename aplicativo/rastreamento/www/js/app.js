@@ -38,7 +38,7 @@ angular.module('starter').controller('ctrl', ['$scope', '$ionicPopup', '$http', 
 
       $scope.$digest();
     });
-  }, 10000);
+  }, 3000);
 
   $scope.data = {
     token: '',
