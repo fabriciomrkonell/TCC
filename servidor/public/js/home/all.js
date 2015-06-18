@@ -113,20 +113,21 @@ angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', f
     socket.on('news_cords_all', function(data){
       for(var i = 0; i < data.length; i++){
 
-        isPoly(data[i], map);
+        //isPoly(data[i], map);
 
-        for(var  = 0; j < (data[i].Cords.length - 1); j++){
-          paths[data[i].id].path.push(new google.maps.LatLng(data[i].Cords[j].lat, data[i].Cords[j].lon));
+        for(var j = 0; j < (data[i].Cords.length - 1); j++){
+          new google.maps.Marker({ position: new google.maps.LatLng(data[i].Cords[j].lat, data[i].Cords[j].lon), map: map, title: 'Hello World!' });
+          //paths[data[i].id].path.push(new google.maps.LatLng(data[i].Cords[j].lat, data[i].Cords[j].lon));
         }
 
-        paths[data[i].id].poly.setPath(paths[data[i].id].path);
+        //paths[data[i].id].poly.setPath(paths[data[i].id].path);
       }
     });
 
     socket.on('news_cords', function(data){
-      isPoly(data, map);
-      paths[data.id].path.push(new google.maps.LatLng(data.lat, data.lon));
-      paths[data.id].poly.setPath(paths[data.id].path);
+      //isPoly(data, map);
+      //paths[data.id].path.push(new google.maps.LatLng(data.lat, data.lon));
+      //paths[data.id].poly.setPath(paths[data.id].path);
     });
 
   }
