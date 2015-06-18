@@ -125,6 +125,7 @@ angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', f
     });
 
     socket.on('news_cords', function(data){
+      new google.maps.Marker({ position: new google.maps.LatLng(data.lat, data.lon), map: map, title: 'Hello World!' });
       //isPoly(data, map);
       //paths[data.id].path.push(new google.maps.LatLng(data.lat, data.lon));
       //paths[data.id].poly.setPath(paths[data.id].path);
