@@ -10,7 +10,8 @@ exports.get = function(socket, equipments) {
         model: db.Cords,
         attributes: ['lat', 'lon'],
         where: {
-          history: db.sequelize.col('Equipment.history')
+          history: db.sequelize.col('Equipment.history'),
+          flag: false
         }
       },
       attributes: ['id', 'description', 'token'],
@@ -72,12 +73,29 @@ exports.persist = function(req, res, next) {
 
 exports.start = function(req, res, next) {
   db.Equipment.find({ where: { token: req.param('token') } }).success(function(entity) {
+
     if (entity) {
+
       if(entity.history == 0){
-        db.Cords.max('history').success(function(max){
-          entity.updateAttributes({ history: ((max || 0) + 1)}).success(function(entityCords){
+
+        db.Cords.max('history', {
+          where: {
+            EquipmentId: entity.id
+          }
+        }).success(function(max){
+
+          db.Cords.create({
+            lat: '',
+            lon: '',
+            flag: true,
+            history: ((max || 0) + 1),
+            EquipmentId: entity.id
+          });
+
+          entity.updateAttributes({ history: ((max || 0) + 1) }).success(function(entityCords){
             res.send({ message: "Rastreamento iniciado com sucesso!", error: 0, data: entityCords.history });
           });
+
         });
       }else{
         res.send({ message: "Rastreamento iniciado com sucesso!", error: 0, data: entity.history });
@@ -94,6 +112,15 @@ exports.stop = function(req, res, next) {
       if(entity.history == 0){
         res.send({ message: "Rastreamento parado com sucesso!", error: 0, data: entity.history });
       }else{
+
+        db.Cords.create({
+          lat: '',
+          lon: '',
+          flag: true,
+          history: entity.history,
+          EquipmentId: entity.id
+        });
+
         entity.updateAttributes({ history: 0 }).success(function(entityCords){
           res.send({ message: "Rastreamento parado com sucesso!", error: 0, data: entityCords.history });
         });

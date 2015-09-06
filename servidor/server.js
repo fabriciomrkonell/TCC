@@ -18,6 +18,7 @@ var express = require('express'),
     util = require('./routes/util'),
     router_profile  = require('./routes/profile'),
     router_equipment  = require('./routes/equipment'),
+    router_route  = require('./routes/route'),
     swig = require('swig');
 
 app.set('port', process.env.PORT || 3000)
@@ -116,6 +117,10 @@ app.get('/equipment', isAuthenticated, function(req, res, next){
   home.equipment(req, res, next);
 });
 
+app.get('/routes', isAuthenticated, function(req, res, next){
+  home.routes(req, res, next);
+});
+
 app.get('/realtime', isAuthenticated, function(req, res, next){
   home.realtime(req, res, next);
 });
@@ -154,6 +159,11 @@ app.get('/api/data-equipment-is-token/:token', router_equipment.dataEquipmentIsT
 app.post('/api/persist-equipment', isAuthenticatedPage, router_equipment.persistEquipment);
 app.post('/api/persist-equipment-status', isAuthenticatedPage, router_equipment.persistEquipmentStatus);
 app.delete('/api/delete-equipment/:id', isAuthenticatedPage, router_equipment.deleteEquipment);
+
+// Routes
+app.get('/api/data-route', isAuthenticatedPage, router_route.dataRoute);
+app.get('/api/data-route-cords/:history', isAuthenticatedPage, router_route.dataRouteCords);
+app.delete('/api/delete-route/:id', isAuthenticatedPage, router_route.deleteRoute);
 
 db.sequelize.sync({ force: false }).complete(function(err) {
   if (err) {

@@ -15,7 +15,7 @@ angular.module('starter').constant('API', {
   isToken: 'http://rastreamento.fabricioronchi.com/api/data-equipment-is-token/',
   persistToken: 'http://rastreamento.fabricioronchi.com/api/client_persist?token=',
   startToken: 'http://rastreamento.fabricioronchi.com/api/client_start?token=',
-  stopToken: 'http://rastreamento.fabricioronchi.com/api/client_stop?token='d
+  stopToken: 'http://rastreamento.fabricioronchi.com/api/client_stop?token='
 });
 
 

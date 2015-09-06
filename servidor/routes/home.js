@@ -39,3 +39,10 @@ exports.equipment = function(req, res, next) {
     count: 0
   });
 };
+
+exports.routes = function(req, res, next) {
+  res.render('views/home', {
+    page: '/routes',
+    count: 0
+  });
+};

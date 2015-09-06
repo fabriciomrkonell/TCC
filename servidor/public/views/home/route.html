@@ -1,0 +1,38 @@
+<div class="container" ng-controller="route">
+	<div class="row">
+		<h3>
+			<i class="glyphicon glyphicon-cloud"></i>
+			&nbsp;&nbsp;Rotas
+		</h3>
+	</div>
+	<br>
+	<div class="row">
+		<table class="table table-bordered table-condensed">
+			<tr>
+				<th>Equipamento</th>
+				<th class="text-center" style="width:200px">Data início</th>
+				<th class="text-center" style="width:200px">Data fim</th>
+				<th class="text-center" style="width:150px">Ações</th>
+			</tr>
+			<tr ng-repeat="obj in data.routes">
+				<td>((obj.description))</td>
+				<td class="text-center" style="width:200px">((obj.start | date:'dd/MM/yyyy HH:mm:ss'))</td>
+				<td class="text-center" style="width:200px">((obj.finish | date:'dd/MM/yyyy HH:mm:ss'))</td>
+				<td class="text-center" style="width:150px">
+					<button type="button" class="btn btn-xs btn-primary" ng-click="viewMaps(obj)">Visualizar</button>
+					<button type="button" class="btn btn-xs btn-danger" ng-click="delete(obj)">Excluir</button>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+
+<div class="fade" id="modal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div style="width: 100%; height: 500px" id="mapRoute"></div>
+      </div>
+    </div>
+  </div>
+</div>

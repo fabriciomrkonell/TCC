@@ -6,6 +6,10 @@ module.exports = function(sequelize, DataTypes) {
     lon: {
       type: DataTypes.STRING(100)
     },
+    flag: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false
+    },
     history: {
       type: DataTypes.INTEGER(100)
     }

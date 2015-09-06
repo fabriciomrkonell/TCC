@@ -81,6 +81,81 @@ angular.module('app').controller('equipment', ['$scope', '$http', '$rootScope', 
 
 }]);
 
+angular.module('app').controller('route', ['$scope', '$http', '$rootScope', function($scope, $http, $rootScope){
+
+  var paths = {},
+      service = new google.maps.DirectionsService(), poly,
+      map = null;
+
+  function isPoly(data, map){
+    if(paths[data.id] == null){
+      paths[data.id] = {};
+      paths[data.id].path = new google.maps.MVCArray();
+      paths[data.id].poly = new google.maps.Polyline({ map: map, strokeColor: "#FF0000" });
+    }
+  }
+
+  angular.extend($scope, {
+    data: {
+      routes: [],
+      cords: []
+    }
+  });
+
+  $scope.getAll = function(obj){
+    $http.get('/api/data-route').success(function(data){
+      angular.extend($scope, {
+        data: {
+          routes: data.data
+        }
+      });
+    });
+  };
+
+  $scope.getAll();
+
+  $scope.viewMaps = function(obj){
+
+    if(map == null){
+      var myOptions = {
+        zoom: 13,
+        center: new google.maps.LatLng(-26.494561, -49.1048534),
+        mapTypeId: google.maps.MapTypeId.ROADMAP,
+        mapTypeControl: false,
+        disableDefaultUI: true
+      }
+
+      map = new google.maps.Map(document.getElementById("mapRoute"), myOptions);
+    }
+
+    paths[obj.id] = null;
+
+    $http.get('/api/data-route-cords/' + obj.history).success(function(data){
+
+      data = data.data;
+
+      isPoly(obj, map);
+
+      for(var i = 0; i < data.length; i++){
+        paths[obj.id].path.push(new google.maps.LatLng(data[i].lat, data[i].lon));
+        paths[obj.id].poly.setPath(paths[obj.id].path);
+      }
+
+      $('#modal').addClass('modal');
+
+      $('#modal').modal();
+
+    });
+  };
+
+  $scope.delete = function(obj){
+    $http.delete('/api/delete-route/' + obj.CordsId).success(function(data){
+      $scope.getAll();
+    });
+  };
+
+}]);
+
 angular.module('app').controller('realtime', ['$scope', '$rootScope', '$http', function($scope, $rootScope, $http){
 
   var paths = {},
@@ -216,7 +291,10 @@ angular.module('app').service('Util', ['$http', '$rootScope', function($http, $r
         arrayEquipments.push(data.data[i].token);
       }
 
-      socket.emit('equipments', { equipments: arrayEquipments, url: window.location.pathname });
+      if(socket){
+        socket.emit('equipments', { equipments: arrayEquipments, url: window.location.pathname });
+      }
+
     });
   },
   this.setStatus = function(obj){

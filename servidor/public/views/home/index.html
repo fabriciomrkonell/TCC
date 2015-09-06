@@ -8,7 +8,11 @@
     <title>Rastreamento</title>
     <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/css/style.css" rel="stylesheet">
-    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+
+    {% if page == '/realtime' || page == '/routes' %}
+      <script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+    {% endif %}
+
   </head>
   <body class="ng-cloak">
     <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
@@ -42,6 +46,9 @@
                 </ul>
               </li>
             {% endif %}
+
+            <li><a href="/routes">Rotas</a></li>
+
           </ul>
           <ul class="nav navbar-nav navbar-right">
             <li>
@@ -78,10 +85,14 @@
       {% include '../home/equipment.html' %}
     {% endif %}
 
+    {% if page == '/routes' %}
+      {% include '../home/route.html' %}
+    {% endif %}
+
+    <script src="/socket.io/socket.io.js"></script>
     <script src="/lib/jquery/jquery.min.js"></script>
     <script src="/lib/angular/angular.min.js"></script>
     <script src="/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="/js/home/all.js"></script>
   </body>
 </html>
