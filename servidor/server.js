@@ -189,3 +189,5 @@ db.sequelize.sync({ force: false }).complete(function(err) {
 });
 
 module.exports.io = io;
+
+// Teste
